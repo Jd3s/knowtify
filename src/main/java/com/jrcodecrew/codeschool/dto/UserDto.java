@@ -10,13 +10,15 @@ public class UserDto {
   private String lastName;
   private String role;
 
+
   public UserDto(
-          String userName,
-          String password,
-          String email,
-          String phone,
-          String firstName,
-          String lastName, String role) {
+      String userName,
+      String password,
+      String email,
+      String phone,
+      String firstName,
+      String lastName,
+      String role) {
     this.userName = userName;
     this.password = password;
     this.email = email;
@@ -25,6 +27,8 @@ public class UserDto {
     this.lastName = lastName;
     this.role = role;
   }
+
+
 
   public String getUserName() {
     return userName;
@@ -81,4 +85,5 @@ public class UserDto {
   public void setRole(String role) {
     this.role = role;
   }
+
 }

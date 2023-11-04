@@ -1,49 +1,40 @@
 package com.jrcodecrew.codeschool.service.impl;
 
+import com.jrcodecrew.codeschool.dto.ChildDto;
 import com.jrcodecrew.codeschool.dto.LoginDto;
 import com.jrcodecrew.codeschool.dto.UserDto;
+import com.jrcodecrew.codeschool.exception.PhoneNumberException;
+import com.jrcodecrew.codeschool.model.Child;
 import com.jrcodecrew.codeschool.model.User;
+import com.jrcodecrew.codeschool.repository.ChildRepository;
 import com.jrcodecrew.codeschool.repository.UserRepository;
 import com.jrcodecrew.codeschool.response.LoginResponse;
 import com.jrcodecrew.codeschool.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.time.*;
+
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
   private UserRepository userRepository;
+  private ChildRepository childRepository;
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository) {
+  public UserServiceImpl(UserRepository userRepository, ChildRepository childRepository) {
     super();
     this.userRepository = userRepository;
-  }
-
-  @Override
-  public User saveUser(UserDto userDto) {
-    // conversion login for userdto to user
-    User user =
-        new User(
-            userDto.getUserName(),
-            this.passwordEncoder.encode(userDto.getPassword()),
-            userDto.getEmail(),
-            userDto.getPhone(),
-            userDto.getRole(),
-            userDto.getFirstName(),
-            userDto.getLastName(),
-            LocalDate.now().toString());
-    return userRepository.save(user);
+    this.childRepository = childRepository;
   }
 
   @Override
   public LoginResponse loginUser(LoginDto loginDto) {
 
-    String msg = "";
     User user = userRepository.findByEmail(loginDto.getEmail());
     if (user != null) {
       String password = loginDto.getPassword();
@@ -64,4 +55,62 @@ public class UserServiceImpl implements UserService {
       return new LoginResponse("Email not exists", false);
     }
   }
-}
+
+  @Override
+  public User saveUser(UserDto userDto) {
+    User.Role role;
+    try {
+      role = User.Role.valueOf(userDto.getRole().toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid role specified: " + userDto.getRole());
+    }
+    if (role == User.Role.PARENT && userDto.getPhone() == null) {
+      throw new PhoneNumberException();
+    }
+    User user =
+        new User(
+            userDto.getUserName(),
+            this.passwordEncoder.encode(userDto.getPassword()),
+            userDto.getEmail(),
+            userDto.getPhone(),
+            role,
+            userDto.getFirstName(),
+            userDto.getLastName(),
+            new Date(),
+            null);
+    return userRepository.save(user);
+  }
+
+  @Override
+  public User addChild(ChildDto childDto) {
+    User parent =
+        userRepository
+            .findById(Long.parseLong(childDto.getParentId()))
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Parent with ID " + childDto.getParentId() + " not found"));
+    User user =
+        new User()
+            .setUserName(childDto.getUserName())
+            .setEmail(childDto.getEmail())
+            .setRole(User.Role.CHILD)
+            .setDate_created(new Date())
+            .setPassword(this.passwordEncoder.encode(childDto.getPassword()))
+            .setFirst_name(childDto.getFirstName())
+            .setLast_name(childDto.getLastName())
+            .setParent(parent);
+    User childUser = userRepository.save(user);
+
+    Child child = new Child().setUser(user).setAgeGroup(childDto.getAgeGroup());
+
+    // Save the Child entity
+    childRepository.save(child);
+    return childUser;
+  }
+
+  @Override
+  public List<Child> getChildren(Long parentId) {
+    return childRepository.findByUserParentId(parentId);
+  }
+} // end of class
