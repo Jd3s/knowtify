@@ -17,4 +17,6 @@ public interface UserService {
   User addChild(ChildDto childDtoDto);
 
   List<Child> getChildren(Long parentId);
+
+  User getUser(String email);
 }

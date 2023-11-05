@@ -1,4 +1,4 @@
-package com.jrcodecrew.codeschool.Config;
+package com.jrcodecrew.codeschool.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

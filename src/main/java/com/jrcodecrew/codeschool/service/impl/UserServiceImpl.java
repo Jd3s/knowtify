@@ -10,13 +10,13 @@ import com.jrcodecrew.codeschool.repository.ChildRepository;
 import com.jrcodecrew.codeschool.repository.UserRepository;
 import com.jrcodecrew.codeschool.response.LoginResponse;
 import com.jrcodecrew.codeschool.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -35,7 +35,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public LoginResponse loginUser(LoginDto loginDto) {
 
-    User user = userRepository.findByEmail(loginDto.getEmail());
+    User user =
+            userRepository
+                .findByEmail(loginDto.getEmail())
+                .orElseThrow(
+                    () ->
+                        new EntityNotFoundException(
+                            "User not found with email: " + loginDto.getEmail()));
     if (user != null) {
       String password = loginDto.getPassword();
       String encodedPassword = user.getPassword();
@@ -88,8 +94,8 @@ public class UserServiceImpl implements UserService {
             .findById(Long.parseLong(childDto.getParentId()))
             .orElseThrow(
                 () ->
-                    new IllegalArgumentException(
-                        "Parent with ID " + childDto.getParentId() + " not found"));
+                    new EntityNotFoundException(
+                        "Parent not found with id: " + childDto.getParentId()));
     User user =
         new User()
             .setUserName(childDto.getUserName())
@@ -113,4 +119,12 @@ public class UserServiceImpl implements UserService {
   public List<Child> getChildren(Long parentId) {
     return childRepository.findByUserParentId(parentId);
   }
+
+  @Override
+  public User getUser(String email) {
+    return userRepository
+        .findByEmail(email)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+  }
+
 } // end of class

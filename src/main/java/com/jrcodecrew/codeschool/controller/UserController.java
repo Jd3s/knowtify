@@ -37,6 +37,12 @@ public class UserController {
     return new ResponseEntity<User>(registeredUser, HttpStatus.CREATED);
   }
 
+  @GetMapping("/getUserByEmail/{email}")
+  public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+    User user = userService.getUser(email);
+    return ResponseEntity.ok(user);
+  }
+
   @PostMapping("/addChild")
   public ResponseEntity<User> addChild(@RequestBody ChildDto childDto) {
     User registeredUser = userService.addChild(childDto);
