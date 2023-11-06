@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 @Table(name = "course")
 public class Course {
 
-  @Id private long course_id;
+  @Id
+  @Column(name = "course_id", nullable = false)
+  private String courseId;
 
   @Column(name = "course_name", nullable = false)
   private String courseName;
@@ -18,19 +20,22 @@ public class Course {
   @Column(name = "age_group", nullable = false)
   private AgeGroup ageGroup;
 
-  public Course(long course_id, String courseName, String description, AgeGroup ageGroup) {
-    this.course_id = course_id;
+  public Course() {
+  }
+
+  public Course(String course_id, String courseName, String description, AgeGroup ageGroup) {
+    this.courseId = course_id;
     this.courseName = courseName;
     this.description = description;
     this.ageGroup = ageGroup;
   }
 
-  public long getCourse_id() {
-    return course_id;
+  public String getCourseId() {
+    return courseId;
   }
 
-  public void setCourse_id(long course_id) {
-    this.course_id = course_id;
+  public void setCourseId(String courseId) {
+    this.courseId = courseId;
   }
 
   public String getCourseName() {
@@ -61,7 +66,7 @@ public class Course {
   public String toString() {
     return "Course{"
         + "course_id="
-        + course_id
+        + courseId
         + ", courseName='"
         + courseName
         + '\''
