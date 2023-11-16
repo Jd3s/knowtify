@@ -1,5 +1,6 @@
 package com.jrcodecrew.codeschool.config;
 
+import com.jrcodecrew.codeschool.exception.MultipleActiveEnrollmentsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MultipleActiveEnrollmentsException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(MultipleActiveEnrollmentsException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

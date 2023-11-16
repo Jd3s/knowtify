@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/course")
@@ -42,6 +43,12 @@ public class CourseController {
   @GetMapping("/getCourses")
   public ResponseEntity<List<Course>> getCoursesByAgeGroup(@RequestParam String ageGroup) {
     List<Course> course = courseService.getCoursesByAgeGroup(ageGroup);
+    return ResponseEntity.ok(course);
+  }
+
+  @PostMapping("/addInstructorToCourse/{courseId}")
+  public ResponseEntity<Course> addInstructorToCourse(@PathVariable String courseId, @RequestBody Map<String, Long> requestBody) {
+    Course course = courseService.addInstructorToCourse(courseId, requestBody.get("instrcutorId"));
     return ResponseEntity.ok(course);
   }
 

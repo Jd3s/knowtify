@@ -2,35 +2,35 @@ package com.jrcodecrew.codeschool.dto;
 import com.jrcodecrew.codeschool.model.AgeGroup;
 
 public class CourseDto{
-    private String course_id;
-    private String course_name;
+    private String courseId;
+    private String courseName;
     private String description;
-    private AgeGroup age_group;
+    private AgeGroup ageGroup;
 
-    public CourseDto(String course_id, String course_name, String description, String age_group) {
-        this.course_id = course_id;
-        this.course_name = course_name;
+    public CourseDto(String courseId, String courseName, String description, String ageGroup) {
+        this.courseId = courseId;
+        this.courseName = courseName;
         this.description = description;
-        this.age_group = Enum.valueOf(AgeGroup.class,age_group);
+        this.ageGroup = Enum.valueOf(AgeGroup.class, ageGroup);
     }
 
     public CourseDto() {
     }
 
-    public String getCourse_id() {
-        return course_id;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setCourse_id(String course_id) {
-        this.course_id = course_id;
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
-    public String getCourse_name() {
-        return course_name;
+    public String getCourseName() {
+        return courseName;
     }
 
-    public void setCourse_name(String course_name) {
-        this.course_name = course_name;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public String getDescription() {
@@ -41,21 +41,21 @@ public class CourseDto{
         this.description = description;
     }
 
-    public AgeGroup getAge_group() {
-        return age_group;
+    public AgeGroup getAgeGroup() {
+        return ageGroup;
     }
 
-    public void setAge_group(AgeGroup age_group) {
-        this.age_group = age_group;
+    public void setAgeGroup(AgeGroup ageGroup) {
+        this.ageGroup = ageGroup;
     }
 
     @Override
     public String toString() {
         return "CourseDto{" +
-                "course_id='" + course_id + '\'' +
-                ", course_name='" + course_name + '\'' +
+                "course_id='" + courseId + '\'' +
+                ", course_name='" + courseName + '\'' +
                 ", description='" + description + '\'' +
-                ", ageGroup=" + age_group +
+                ", ageGroup=" + ageGroup +
                 '}';
     }
 }

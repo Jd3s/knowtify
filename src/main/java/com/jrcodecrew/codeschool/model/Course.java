@@ -2,6 +2,9 @@ package com.jrcodecrew.codeschool.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "course")
 public class Course {
@@ -20,11 +23,23 @@ public class Course {
   @Column(name = "age_group", nullable = false)
   private AgeGroup ageGroup;
 
+  @ManyToMany
+  @JoinTable(
+          name = "course_instructor",
+          joinColumns = @JoinColumn(name = "course_id"),
+          inverseJoinColumns = @JoinColumn(name = "instructor_id", referencedColumnName = "id")
+  )
+  private Set<Instructor> instructors = new HashSet<>();
+
   public Course() {
   }
 
-  public Course(String course_id, String courseName, String description, AgeGroup ageGroup) {
-    this.courseId = course_id;
+  public Course(
+          String courseId,
+          String courseName,
+          String description,
+          AgeGroup ageGroup) {
+    this.courseId = courseId;
     this.courseName = courseName;
     this.description = description;
     this.ageGroup = ageGroup;
@@ -62,19 +77,23 @@ public class Course {
     this.ageGroup = ageGroup;
   }
 
+  public Set<Instructor> getInstructors() {
+    return instructors;
+  }
+
+  public Course setInstructors(Set<Instructor> instructors) {
+    this.instructors = instructors;
+    return this;
+  }
+
   @Override
   public String toString() {
-    return "Course{"
-        + "course_id="
-        + courseId
-        + ", courseName='"
-        + courseName
-        + '\''
-        + ", description='"
-        + description
-        + '\''
-        + ", ageGroup="
-        + ageGroup
-        + '}';
+    return "Course{" +
+            "courseId='" + courseId + '\'' +
+            ", courseName='" + courseName + '\'' +
+            ", description='" + description + '\'' +
+            ", ageGroup=" + ageGroup +
+            ", instructors=" + instructors +
+            '}';
   }
 }
