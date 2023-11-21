@@ -2,12 +2,14 @@ package com.jrcodecrew.codeschool.model;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
 @Table(name = "child")
 public class Child {
 
     @Id
+    @Getter
     private long id;
 
     @OneToOne

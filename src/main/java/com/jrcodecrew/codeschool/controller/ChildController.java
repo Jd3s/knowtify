@@ -1,12 +1,9 @@
 package com.jrcodecrew.codeschool.controller;
 
-import com.jrcodecrew.codeschool.dto.CourseDto;
 import com.jrcodecrew.codeschool.dto.EnrollmentDto;
 import com.jrcodecrew.codeschool.model.Course;
 import com.jrcodecrew.codeschool.model.Enrollment;
-import com.jrcodecrew.codeschool.service.CourseService;
 import com.jrcodecrew.codeschool.service.EnrollmentService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,4 +32,12 @@ public class ChildController {
   public ResponseEntity<List<Course>> getActiveEnrollments(@PathVariable Long childId) {
     return ResponseEntity.ok(enrollmentService.getEnrolledCourses(childId));
   }
+
+  @PostMapping("/addScheduleToEnrollment/{enrollmentId}")
+  public ResponseEntity<Enrollment> addScheduleToEnrollment(@RequestBody Long scheduleId, @PathVariable Long enrollmentId) {
+    Enrollment enrollment = enrollmentService.addScheduleToEnrollment(scheduleId, enrollmentId);
+    return ResponseEntity.ok(enrollment);
+  }
+
+
 }

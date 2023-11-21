@@ -1,7 +1,9 @@
 package com.jrcodecrew.codeschool.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "enrollment")
@@ -27,6 +29,9 @@ public class Enrollment {
   @Column(name = "status", nullable = false)
   @Enumerated(EnumType.STRING)
   private EnrollmentStatus status;
+
+  @ManyToMany(mappedBy = "enrollments")
+  private Set<Schedule> schedules = new HashSet<>();
 
   public Enrollment() {}
 
@@ -67,6 +72,13 @@ public class Enrollment {
 
   public void setStatus(EnrollmentStatus status) {
     this.status = status;
+  }
+  public void setSchedule(Set<Schedule> schedules) {
+    this.schedules = schedules;
+  }
+
+  public Set<Schedule> getSchedule() {
+    return schedules;
   }
 
   @Override
