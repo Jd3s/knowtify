@@ -12,6 +12,7 @@ public class InstructorDto {
   private int yearsOfExperience;
   private String proficiency;
 
+  private String meetingLink;
   public InstructorDto() {}
 
   public InstructorDto(
@@ -98,5 +99,13 @@ public class InstructorDto {
         + proficiency
         + '\''
         + '}';
+  }
+
+  public String getMeetingLink() {
+    return meetingLink;
+  }
+
+  public void setMeetingLink(String meetingLink) {
+    this.meetingLink = meetingLink;
   }
 }

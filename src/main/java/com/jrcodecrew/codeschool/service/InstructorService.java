@@ -14,4 +14,5 @@ public interface InstructorService {
 
   List<Schedule> getScheduleByInstructorId(Long instructorId);
 
+  Boolean deleteSchedule(Long scheduleId);
 }

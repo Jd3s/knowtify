@@ -9,6 +9,9 @@ public class EnrollmentDto {
   private Long instructorId;
   private EnrollmentStatus status;
 
+  private String link;
+
+
   public EnrollmentDto() {}
 
   public Long getChildId() {

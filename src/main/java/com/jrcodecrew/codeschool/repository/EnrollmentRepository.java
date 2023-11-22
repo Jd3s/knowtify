@@ -12,6 +12,8 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
   List<Enrollment> findByChildIdAndStatus(Long childId, EnrollmentStatus status);
 
+  List<Enrollment> findAllByStatus(EnrollmentStatus status);
+
   @Query("SELECT e.course FROM Enrollment e WHERE e.child.id = :childId")
   List<Course> findCoursesByChildId(Long childId);
 }

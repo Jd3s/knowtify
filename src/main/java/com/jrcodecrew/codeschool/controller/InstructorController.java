@@ -29,6 +29,7 @@ public class InstructorController {
     return new ResponseEntity<Instructor>(instructor, HttpStatus.CREATED);
   }
 
+
   @PostMapping("/addScheduleToInstructor/{instructorId}")
   public ResponseEntity<Schedule> addScheduleToInstructor(@RequestBody ScheduleDto scheduleDto) {
     Schedule schedule = instructorService.addScheduleToInstructor(scheduleDto);
@@ -39,6 +40,11 @@ public class InstructorController {
   public ResponseEntity<List<Schedule>> getScheduleByInstructorId(@PathVariable Long instructorId) {
     List<Schedule> schedule = instructorService.getScheduleByInstructorId(instructorId);
     return ResponseEntity.ok(schedule);
+  }
+
+  @GetMapping("/deleteSchedule/{scheduleId}")
+  public ResponseEntity<Boolean> deleteSchedule(@PathVariable Long scheduleId) {
+    return ResponseEntity.ok(instructorService.deleteSchedule(scheduleId));
   }
 
 }

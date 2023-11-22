@@ -31,6 +31,9 @@ public class Instructor {
   @Column(name = "proficiency", nullable = false)
   private String proficiency;
 
+  @Column(name = "meeting_link", nullable = false)
+  private String meetingLink;
+
   public Instructor() {}
 
   public Instructor(
@@ -39,7 +42,7 @@ public class Instructor {
       String email,
       String phone,
       int yearsOfExperience,
-      String proficiency) {
+      String proficiency, String meetingLink) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -47,6 +50,7 @@ public class Instructor {
     this.phone = phone;
     this.yearsOfExperience = yearsOfExperience;
     this.proficiency = proficiency;
+    this.meetingLink = meetingLink;
   }
 
   public String getFirstName() {

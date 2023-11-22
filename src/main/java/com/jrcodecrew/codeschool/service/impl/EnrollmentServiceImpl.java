@@ -26,7 +26,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       EnrollmentRepository enrollmentRepository,
       ChildRepository childRepository,
       CourseRepository courseRepository,
-      InstructorRepository instructorRepository) {
+      InstructorRepository instructorRepository, ScheduleRepository scheduleRepository) {
     super();
     this.enrollmentRepository = enrollmentRepository;
     this.childRepository = childRepository;
@@ -36,7 +36,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   }
 
   @Override
-  public EnrollmentDto enrollChild(EnrollmentDto enrollmentDto) {
+  public EnrollmentDto enrollChild(EnrollmentDto enrollmentDto, Long scheduleId) {
     List<Enrollment> activeEnrollment =
         enrollmentRepository.findByChildIdAndStatus(
             enrollmentDto.getChildId(), EnrollmentStatus.ACTIVE);
@@ -64,9 +64,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 () ->
                     new EntityNotFoundException(
                         "Instructor with id not found : " + enrollmentDto.getInstructorId()));
-    Enrollment enrollment = new Enrollment(child, course, instructor);
+
+
+    Schedule schedule =
+            scheduleRepository
+                    .findById(scheduleId)
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Schedule with id not found : " + scheduleId));
+
+
+
+
+   schedule.setCurrently_enrolled(schedule.getCurrently_enrolled()+1);
+   scheduleRepository.save(schedule);
+
+
+
+    Enrollment enrollment = new Enrollment(child, course, instructor, schedule);
     enrollmentRepository.save(enrollment);
-    return enrollmentDto.setStatus(EnrollmentStatus.ACTIVE);
+
+
+    return enrollmentDto.setStatus(EnrollmentStatus.PENDING);
   }
 
   @Override
@@ -98,6 +118,80 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     enrollment.getSchedule().add(schedule);
     return enrollmentRepository.save(enrollment);
   }
+
+  @Override
+  public Boolean checkEnroll(EnrollmentDto enrollmentDto, Long scheduleId) {
+
+    List<Enrollment> activeEnrollment =
+            enrollmentRepository.findByChildIdAndStatus(
+                    enrollmentDto.getChildId(), EnrollmentStatus.ACTIVE);
+
+    if (!activeEnrollment.isEmpty()) {
+      throw new MultipleActiveEnrollmentsException();
+    }
+
+
+    Child child =
+            childRepository
+                    .findById(enrollmentDto.getChildId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Child with id not found : " + enrollmentDto.getChildId()));
+    Course course =
+            courseRepository
+                    .findByCourseId(enrollmentDto.getCourseId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Course with id not found : " + enrollmentDto.getCourseId()));
+    Instructor instructor =
+            instructorRepository
+                    .findById(enrollmentDto.getInstructorId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Instructor with id not found : " + enrollmentDto.getInstructorId()));
+
+
+    Schedule schedule =
+            scheduleRepository
+                    .findById(scheduleId)
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Schedule with id not found : " + scheduleId));
+
+
+    if(!(schedule.getCap() > schedule.getCurrently_enrolled()))
+      throw new EntityNotFoundException(
+              "Enrollment limit exceeded for : " + scheduleId);
+
+    if (checkChildScheduleOverlap(child, schedule))
+      throw new MultipleActiveEnrollmentsException();
+
+
+    return true;
+  }
+
+  @Override
+  public Boolean acceptEnroll(Long enrollmentId) {
+    Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(
+            () ->
+                    new EntityNotFoundException(
+                            "Enrollment with id not found : " + enrollmentId));
+
+
+    enrollment.setStatus(EnrollmentStatus.ACTIVE);
+    return true;
+  }
+
+  @Override
+  public List<Enrollment> getPendingEnrollments() {
+    List<Enrollment> enrollments = enrollmentRepository.findAllByStatus(EnrollmentStatus.PENDING);
+    return enrollments;
+  }
+
 
   public static boolean isOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
     return start1.isBefore(end2) && start2.isBefore(end1);

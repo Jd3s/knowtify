@@ -16,5 +16,7 @@ public class ScheduleDto {
     private LocalTime endTime;
     private int day;
     private Long instructorId;
-//    private EnrollmentStatus status;
+    private EnrollmentStatus status;
+    private int cap;
+    private int currently_enrolled;
 }

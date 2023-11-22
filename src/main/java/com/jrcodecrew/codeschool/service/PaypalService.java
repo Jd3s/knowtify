@@ -3,6 +3,8 @@ package com.jrcodecrew.codeschool.service;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
 
+import java.util.Map;
+
 public interface PaypalService {
 
     public Payment createPayment(
@@ -15,4 +17,7 @@ public interface PaypalService {
             String successUrl) throws PayPalRESTException;
 
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException;
+
+    public Map<String, String> getParamMap(String href);
+
 }
