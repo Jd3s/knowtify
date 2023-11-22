@@ -42,6 +42,14 @@ public class Enrollment {
     this.status = EnrollmentStatus.ACTIVE;
   }
 
+  public Enrollment(Child child, Course course, Instructor instructor, Schedule schedule) {
+    this.child = child;
+    this.course = course;
+    this.instructor = instructor;
+    this.status = EnrollmentStatus.PENDING;
+    this.schedules.add(schedule);
+  }
+
   public Child getChild() {
     return child;
   }

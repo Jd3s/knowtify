@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InstructorServiceImpl implements InstructorService {
@@ -40,7 +41,8 @@ public class InstructorServiceImpl implements InstructorService {
             instructorDto.getEmail(),
             instructorDto.getPhone(),
             instructorDto.getYearsOfExperience(),
-            instructorDto.getProficiency());
+            instructorDto.getProficiency(),
+            instructorDto.getMeetingLink());
     return instructorRepository.save(instructor);
   }
 
@@ -66,7 +68,7 @@ public class InstructorServiceImpl implements InstructorService {
                                             "Instructor with id not found : " + scheduleDto.getInstructorId()));
 
 
-    Schedule schedule = new Schedule( instructor, scheduleDto.getStartTime(), scheduleDto.getEndTime(), scheduleDto.getDay());
+    Schedule schedule = new Schedule( instructor, scheduleDto.getStartTime(), scheduleDto.getEndTime(), scheduleDto.getDay(), scheduleDto.getCap(), scheduleDto.getCurrently_enrolled());
     scheduleRepository.save(schedule);
 
     schedule.setStatus(EnrollmentStatus.ACTIVE);
@@ -79,6 +81,15 @@ public class InstructorServiceImpl implements InstructorService {
     return scheduleRepository.findByInstructorId(instructorId);
   }
 
+  @Override
+  public Boolean deleteSchedule(Long scheduleId) {
+    Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new EntityNotFoundException("Schedule not found : " + scheduleId));;
+    if(schedule.getCurrently_enrolled() == 0) {
+      scheduleRepository.delete(schedule);
+      return true;
+    }
 
+    return false;
+  }
 
 }

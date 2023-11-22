@@ -33,6 +33,9 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;  // optional - more like a toggle for the schedule of the instructor
 
+    private int cap;
+    private int currently_enrolled;
+
     @Getter
     @ManyToMany
     @JoinTable(
@@ -45,12 +48,14 @@ public class Schedule {
 
     public Schedule() {}
 
-    public Schedule(Instructor instructor, LocalTime startTime, LocalTime endTime, int day) {
+    public Schedule(Instructor instructor, LocalTime startTime, LocalTime endTime, int day, int cap, int currently_enrolled) {
         this.instructor = instructor;
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
         this.status = EnrollmentStatus.ACTIVE;
+        this.cap = cap;
+        this.currently_enrolled = 0;
     }
 
     public Schedule setEnrollments(Set<Enrollment> enrollments) {

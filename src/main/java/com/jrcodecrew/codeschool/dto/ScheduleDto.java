@@ -17,4 +17,6 @@ public class ScheduleDto {
     private int day;
     private Long instructorId;
     private EnrollmentStatus status;
+    private int cap;
+    private int currently_enrolled;
 }

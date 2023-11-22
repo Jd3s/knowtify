@@ -6,6 +6,7 @@ import com.jrcodecrew.codeschool.dto.LoginDto;
 import com.jrcodecrew.codeschool.dto.UserDto;
 import com.jrcodecrew.codeschool.model.Child;
 import com.jrcodecrew.codeschool.model.Course;
+import com.jrcodecrew.codeschool.model.Instructor;
 import com.jrcodecrew.codeschool.model.User;
 import com.jrcodecrew.codeschool.response.LoginResponse;
 import com.jrcodecrew.codeschool.service.CourseService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/course")
@@ -44,6 +46,12 @@ public class CourseController {
   public ResponseEntity<List<Course>> getCoursesByAgeGroup(@RequestParam String ageGroup) {
     List<Course> course = courseService.getCoursesByAgeGroup(ageGroup);
     return ResponseEntity.ok(course);
+  }
+
+  @GetMapping("/getAllInstructorsForCourse")
+  public ResponseEntity<Set<Instructor>> getAllInstructorsForCourse(@PathVariable String courseId) {
+    Set<Instructor> instructors = courseService.getAllInstructorsForCourse(courseId);
+    return ResponseEntity.ok(instructors);
   }
 
   @PostMapping("/addInstructorToCourse/{courseId}")

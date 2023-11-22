@@ -3,6 +3,7 @@ package com.jrcodecrew.codeschool.service.impl;
 import com.jrcodecrew.codeschool.dto.CourseDto;
 import com.jrcodecrew.codeschool.model.AgeGroup;
 import com.jrcodecrew.codeschool.model.Course;
+import com.jrcodecrew.codeschool.model.Instructor;
 import com.jrcodecrew.codeschool.repository.CourseRepository;
 import com.jrcodecrew.codeschool.repository.InstructorRepository;
 import com.jrcodecrew.codeschool.service.CourseService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -75,4 +77,15 @@ public class CourseServiceImpl implements CourseService {
                             "Instrcutor with id not found : " + instructorId)));
     return courseRepository.save(course);
   }
+
+    @Override
+    public Set<Instructor> getAllInstructorsForCourse(String courseId) {
+      Course course =
+              courseRepository
+                      .findByCourseId(courseId)
+                      .orElseThrow(
+                              () -> new EntityNotFoundException("Course with id not found : " + courseId));
+      return course.getInstructors();
+
+    }
 }
