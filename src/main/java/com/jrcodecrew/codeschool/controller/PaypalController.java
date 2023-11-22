@@ -30,45 +30,26 @@ public class PaypalController {
     @Autowired
     EnrollmentService enrollmentService;
 
-    public static final String SUCCESS_URL = "pay/success";
-    public static final String CANCEL_URL = "pay/cancel";
+    public static final String SUCCESS_URL = "/pay/success";
+    public static final String CANCEL_URL = "/pay/cancel";
 
 
     @PostMapping("/pay")
-    public String payment(@RequestBody Order order, @RequestBody EnrollmentDto enrollmentDto, Long scheduleId) {
+    public String payment(@RequestBody Order order, @RequestBody EnrollmentDto enrollmentDto, @RequestBody Long scheduleId) {
 
         try {
             Payment paymentReq = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
                     order.getIntent(), order.getDescription(), "http://localhost:8080/api/paypal" + CANCEL_URL,
-                    "http://localhost:8080/api/paypal" + SUCCESS_URL);
+                    "http://localhost:8080/api/paypal" + SUCCESS_URL + "/" + enrollmentDto.getCourseId() + "/" + enrollmentDto.getChildId() + "/" + enrollmentDto.getInstructorId()  + "/" + scheduleId );
             for(Links link:paymentReq.getLinks()) {
-                if(link.getRel().equals("approval_url")) {
-                   // return link.getHref();
-
-                    Map<String, String> paramMap = service.getParamMap(link.getHref());
-
-
-                    String paymentId = paramMap.get("paymentId");
-                    String payerId = paramMap.get("PayerID");
-
-
-                    try {
-                        Payment payment = service.executePayment(paymentId, payerId);
-                        System.out.println(payment.toJSON());
-                        if (payment.getState().equals("approved")) {
-                            enrollmentService.enrollChild(enrollmentDto, scheduleId);
-                            return "success";
-                        }
-                    } catch (PayPalRESTException e) {
-                        System.out.println(e.getMessage());
-                    }
-                    return "redirect:/";
+                if (link.getRel().equals("approval_url")) {
+                    return link.getHref();
                 }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+              }
+             } catch (PayPalRESTException e) {
+            System.out.println(e.getMessage());
         }
+
         return "Failed";
     }
 
@@ -77,12 +58,14 @@ public class PaypalController {
         return "cancel";
     }
 
-    @GetMapping(value = SUCCESS_URL)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
+    @GetMapping(value = SUCCESS_URL+"/{courseId}/{childId}/{instructorId}/{scheduleId}")
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, @PathVariable("courseId") String courseId, @PathVariable("childId") Long childId,@PathVariable("instructorId") Long instructorId, @PathVariable("scheduleId") Long scheduleId) {
         try {
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
+                EnrollmentDto enrollmentDto = new EnrollmentDto(childId,courseId, instructorId);
+                enrollmentService.enrollChild(enrollmentDto, scheduleId);
                 return "success";
             }
         } catch (PayPalRESTException e) {
