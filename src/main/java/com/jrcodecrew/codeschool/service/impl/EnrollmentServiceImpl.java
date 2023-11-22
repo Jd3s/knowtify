@@ -198,17 +198,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   }
 
   private Boolean checkChildScheduleOverlap(Child child, Schedule schedule) {
-
-
-    // for each enrolled course, get all the schedules and check if each of it overlaps with the new schedule to be added.
-
+    // for each enrolled course, get all the schedules and check if each if it overlaps with the new schedule to be added.
    List<Enrollment> enrollments =  enrollmentRepository.findByChildIdAndStatus(child.getId(), EnrollmentStatus.ACTIVE);
    for(Enrollment enrollment : enrollments) {
      Set<Schedule> existingSchedules = enrollment.getSchedule();
      for(Schedule existingSchedule : existingSchedules){
+       if (existingSchedule.getDay()==schedule.getDay()){
       if(isOverlapping(existingSchedule.getStartTime(), existingSchedule.getEndTime(), schedule.getStartTime(),schedule.getEndTime()))
         return true;
      }
+       }
    }
    return false;
   }

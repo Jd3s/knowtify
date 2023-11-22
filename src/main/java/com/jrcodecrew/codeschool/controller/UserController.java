@@ -33,6 +33,7 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity<User> saveUser(@RequestBody UserDto userDto) {
+    userDto.setRole(String.valueOf(User.Role.PARENT));
     User registeredUser = userService.saveUser(userDto);
     return new ResponseEntity<User>(registeredUser, HttpStatus.CREATED);
   }

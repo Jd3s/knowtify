@@ -19,4 +19,5 @@ public class ScheduleDto {
     private EnrollmentStatus status;
     private int cap;
     private int currently_enrolled;
+
 }

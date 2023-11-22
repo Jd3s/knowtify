@@ -20,7 +20,7 @@ public class Schedule {
 
 
     // @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
 
