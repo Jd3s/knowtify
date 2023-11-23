@@ -7,11 +7,17 @@ public class CourseDto{
     private String description;
     private AgeGroup ageGroup;
 
-    public CourseDto(String courseId, String courseName, String description, String ageGroup) {
+    private String previewVideo;
+
+    private Double price;
+
+    public CourseDto(String courseId, String courseName, String description, String ageGroup, Double price, String previewVideo) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.description = description;
         this.ageGroup = Enum.valueOf(AgeGroup.class, ageGroup);
+        this.price = price;
+        this.previewVideo = previewVideo;
     }
 
     public CourseDto() {
@@ -49,6 +55,22 @@ public class CourseDto{
         this.ageGroup = ageGroup;
     }
 
+    public String getPreviewVideo() {
+        return previewVideo;
+    }
+
+    public void setPreviewVideo(String previewVideo) {
+        this.previewVideo = previewVideo;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "CourseDto{" +
@@ -56,6 +78,8 @@ public class CourseDto{
                 ", course_name='" + courseName + '\'' +
                 ", description='" + description + '\'' +
                 ", ageGroup=" + ageGroup +
+                ", price=" + price +
+                ", previewVideo=" + previewVideo +
                 '}';
     }
 }

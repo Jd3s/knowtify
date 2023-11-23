@@ -1,12 +1,12 @@
 package com.jrcodecrew.codeschool.service;
 
-import com.jrcodecrew.codeschool.dto.ChildDto;
-import com.jrcodecrew.codeschool.dto.LoginDto;
-import com.jrcodecrew.codeschool.dto.UserDto;
+import com.jrcodecrew.codeschool.dto.*;
 import com.jrcodecrew.codeschool.model.Child;
 import com.jrcodecrew.codeschool.model.User;
 import com.jrcodecrew.codeschool.response.LoginResponse;
+import com.jrcodecrew.codeschool.response.UpdatedUserResponse;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 public interface UserService {
@@ -19,4 +19,10 @@ public interface UserService {
   List<Child> getChildren(Long parentId);
 
   User getUser(String email);
+
+  UpdatedUserResponse updateProfile(Long userId, UpdateUserDto updateUserDto);
+
+  void sendEmail(Long userId, EmailTemplate emailTemplate ) throws MessagingException;
+
+
 }
