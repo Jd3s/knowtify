@@ -1,15 +1,16 @@
 package com.jrcodecrew.codeschool.service.impl;
 
-import com.jrcodecrew.codeschool.dto.ChildDto;
-import com.jrcodecrew.codeschool.dto.LoginDto;
-import com.jrcodecrew.codeschool.dto.UserDto;
+import com.jrcodecrew.codeschool.dto.*;
 import com.jrcodecrew.codeschool.exception.PhoneNumberException;
+import com.jrcodecrew.codeschool.model.AgeGroup;
 import com.jrcodecrew.codeschool.model.Child;
 import com.jrcodecrew.codeschool.model.User;
 import com.jrcodecrew.codeschool.repository.ChildRepository;
 import com.jrcodecrew.codeschool.repository.UserRepository;
 import com.jrcodecrew.codeschool.response.LoginResponse;
+import com.jrcodecrew.codeschool.response.UpdatedUserResponse;
 import com.jrcodecrew.codeschool.service.UserService;
+import com.jrcodecrew.codeschool.service.util.EmailClient;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -105,8 +108,8 @@ public class UserServiceImpl implements UserService {
             .setRole(User.Role.CHILD)
             .setDate_created(new Date())
             .setPassword(this.passwordEncoder.encode(childDto.getPassword()))
-            .setFirst_name(childDto.getFirstName())
-            .setLast_name(childDto.getLastName())
+            .setFirstName(childDto.getFirstName())
+            .setLastName(childDto.getLastName())
             .setParent(parent);
     User childUser = userRepository.save(user);
 
@@ -128,5 +131,41 @@ public class UserServiceImpl implements UserService {
         .findByEmail(email)
         .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
   }
+
+  @Override
+  public UpdatedUserResponse updateProfile(Long userId, UpdateUserDto updateUserDto) {
+    UpdatedUserResponse updatedUserResponse = new UpdatedUserResponse();
+    Child child = childRepository.findById(userId).orElse(null);
+    if (child != null) {
+      child.setAgeGroup(Enum.valueOf(AgeGroup.class, updateUserDto.getAgeGroup()));
+      childRepository.save(child);
+      updatedUserResponse.setAgeGroup(child.getAgeGroup());
+    }
+    User user = userRepository.findById(userId).orElse(null);
+    if (user != null) {
+      if (updateUserDto.getFirstName() != null) {
+        user.setFirstName(updateUserDto.getFirstName());
+        updatedUserResponse.setFirstName(user.getFirstName());
+      }
+      if (updateUserDto.getLastName() != null) {
+        user.setLastName(updateUserDto.getLastName());
+        updatedUserResponse.setLastName(user.getLastName());
+      }
+      userRepository.save(user);
+    }
+    return updatedUserResponse;
+  }
+
+  @Override
+  public void sendEmail(Long userId, EmailTemplate emailTemplate) throws MessagingException {
+    User user = userRepository.findById(userId).orElseThrow(
+            () ->
+                    new EntityNotFoundException(
+                            "User not found with email: " + userId));
+    emailTemplate.setTo(user.getEmail());
+    EmailClient.sendAsHtml(emailTemplate.getTo(),emailTemplate.getSubject(),emailTemplate.getContent());
+
+  }
+
 
 } // end of class

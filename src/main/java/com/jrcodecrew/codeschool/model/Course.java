@@ -19,6 +19,12 @@ public class Course {
   @Column(name = "description", nullable = false)
   private String description;
 
+  @Column(name = "preview_video", nullable = true)
+  private String previewVideo;
+
+  @Column(name = "price", nullable = false)
+  private Double price;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "age_group", nullable = false)
   private AgeGroup ageGroup;
@@ -38,11 +44,15 @@ public class Course {
           String courseId,
           String courseName,
           String description,
-          AgeGroup ageGroup) {
+          AgeGroup ageGroup,
+          Double price,
+          String previewVideo) {
     this.courseId = courseId;
     this.courseName = courseName;
     this.description = description;
     this.ageGroup = ageGroup;
+    this.price = price;
+    this.previewVideo = previewVideo;
   }
 
   public String getCourseId() {
@@ -86,6 +96,22 @@ public class Course {
     return this;
   }
 
+  public String getPreviewVideo() {
+    return previewVideo;
+  }
+
+  public void setPreviewVideo(String previewVideo) {
+    this.previewVideo = previewVideo;
+  }
+
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
   @Override
   public String toString() {
     return "Course{" +
@@ -93,7 +119,9 @@ public class Course {
             ", courseName='" + courseName + '\'' +
             ", description='" + description + '\'' +
             ", ageGroup=" + ageGroup +
+            ", price=" + price +
             ", instructors=" + instructors +
+            ", previewVideo=" + previewVideo +
             '}';
   }
 }

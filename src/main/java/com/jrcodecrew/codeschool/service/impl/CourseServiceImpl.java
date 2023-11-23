@@ -32,7 +32,9 @@ public class CourseServiceImpl implements CourseService {
             courseDto.getCourseId(),
             courseDto.getCourseName(),
             courseDto.getDescription(),
-            courseDto.getAgeGroup());
+            courseDto.getAgeGroup(),
+            courseDto.getPrice(),
+            courseDto.getPreviewVideo());
     return courseRepository.save(addedCourse);
   }
 

@@ -30,10 +30,10 @@ public class User {
   private Role role;
 
   @Column(name = "first_name", nullable = false)
-  private String first_name;
+  private String firstName;
 
   @Column(name = "last_name", nullable = false)
-  private String last_name;
+  private String lastName;
 
   @Temporal(TemporalType.DATE)
   @Column(name = "date_created")
@@ -54,8 +54,8 @@ public class User {
       String email,
       String phone,
       Role role,
-      String first_name,
-      String last_name,
+      String firstName,
+      String lastName,
       Date date_created,
       User parent) {
     this.userName = userName;
@@ -63,8 +63,8 @@ public class User {
     this.email = email;
     this.phone = phone;
     this.role = role;
-    this.first_name = first_name;
-    this.last_name = last_name;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.date_created = date_created;
     this.parent = parent;
   }
@@ -88,10 +88,10 @@ public class User {
         + ", role="
         + role
         + ", first_name='"
-        + first_name
+        + firstName
         + '\''
         + ", last_name='"
-        + last_name
+        + lastName
         + '\''
         + ", date_created="
         + date_created
@@ -153,21 +153,21 @@ public class User {
     return this;
   }
 
-  public String getFirst_name() {
-    return first_name;
+  public String getFirstName() {
+    return firstName;
   }
 
-  public User setFirst_name(String first_name) {
-    this.first_name = first_name;
+  public User setFirstName(String firstName) {
+    this.firstName = firstName;
     return this;
   }
 
-  public String getLast_name() {
-    return last_name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public User setLast_name(String last_name) {
-    this.last_name = last_name;
+  public User setLastName(String lastName) {
+    this.lastName = lastName;
     return this;
   }
 

@@ -1,17 +1,19 @@
 package com.jrcodecrew.codeschool.controller;
 
-import com.jrcodecrew.codeschool.dto.ChildDto;
-import com.jrcodecrew.codeschool.dto.LoginDto;
-import com.jrcodecrew.codeschool.dto.UserDto;
+import com.jrcodecrew.codeschool.dto.*;
 import com.jrcodecrew.codeschool.model.Child;
 import com.jrcodecrew.codeschool.model.User;
 import com.jrcodecrew.codeschool.response.LoginResponse;
+import com.jrcodecrew.codeschool.response.UpdatedUserResponse;
 import com.jrcodecrew.codeschool.service.UserService;
+import com.jrcodecrew.codeschool.service.util.EmailClient;
+import org.hibernate.usertype.UserTypeSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -55,4 +57,27 @@ public class UserController {
     List<Child> children = userService.getChildren(parentId);
     return ResponseEntity.ok(children);
   }
+
+  @PutMapping("/edit/{userId}")
+  public ResponseEntity<UpdatedUserResponse> updateProfile(
+      @PathVariable Long userId, @RequestBody UpdateUserDto updateUserDto) {
+    UpdatedUserResponse updateProfile = userService.updateProfile(userId, updateUserDto);
+    return ResponseEntity.ok(updateProfile);
+  }
+
+
+  @PostMapping("/sendEmail/{userId}")
+  public ResponseEntity<String> sendEmail(
+          @PathVariable Long userId, @RequestBody EmailTemplate emailTemplate) {
+    try{
+      userService.sendEmail(userId, emailTemplate);
+    }
+    catch(MessagingException e){
+      e.printStackTrace();
+
+    }
+
+    return ResponseEntity.ok("Email Sent successfully!");
+  }
+
 }
