@@ -36,14 +36,14 @@ public class Schedule {
     private int cap;
     private int currently_enrolled;
 
-    @Getter
-    @ManyToMany
-    @JoinTable(
-            name = "enrollment_schedule",
-            joinColumns = @JoinColumn(name = "schedule_id"),
-            inverseJoinColumns = @JoinColumn(name = "enrollment_id", referencedColumnName = "id")
-    )
-    private Set<Enrollment> enrollments = new HashSet<>();
+//    @Getter
+//    @ManyToMany
+//    @JoinTable(
+//            name = "enrollment_schedule",
+//            joinColumns = @JoinColumn(name = "schedule_id"),
+//            inverseJoinColumns = @JoinColumn(name = "enrollment_id", referencedColumnName = "id")
+//    )
+//    private Set<Enrollment> enrollments = new HashSet<>();
 
 
     public Schedule() {}
@@ -58,10 +58,68 @@ public class Schedule {
         this.currently_enrolled = 0;
     }
 
-    public Schedule setEnrollments(Set<Enrollment> enrollments) {
-        this.enrollments = enrollments;
-        return this;
+//    public Schedule setEnrollments(Set<Enrollment> enrollments) {
+//        this.enrollments = enrollments;
+//        return this;
+//    }
+
+    public Instructor getInstructor() {
+        return instructor;
     }
 
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
 
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    public EnrollmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnrollmentStatus status) {
+        this.status = status;
+    }
+
+    public int getCap() {
+        return cap;
+    }
+
+    public void setCap(int cap) {
+        this.cap = cap;
+    }
+
+    public int getCurrently_enrolled() {
+        return currently_enrolled;
+    }
+
+    public void setCurrently_enrolled(int currently_enrolled) {
+        this.currently_enrolled = currently_enrolled;
+    }
+
+//    public Set<Enrollment> getEnrollments() {
+//        return enrollments;
+//    }
 }

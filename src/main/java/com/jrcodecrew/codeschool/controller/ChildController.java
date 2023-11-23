@@ -22,19 +22,14 @@ public class ChildController {
     this.enrollmentService = enrollmentService;
   }
 
-//  @PostMapping("/enroll")
-//  public ResponseEntity<EnrollmentDto> enrollChild(@RequestBody EnrollmentDto enrollmentDto) {
-//    return new ResponseEntity<EnrollmentDto>(
-//        enrollmentService.enrollChild(enrollmentDto), HttpStatus.CREATED);
-//  }
-    @PostMapping("/checkEnroll")
+  @PostMapping("/checkEnroll")
   public Boolean checkEnroll(@RequestBody EnrollmentDto enrollmentDto, @RequestBody Long scheduleId) {
     return enrollmentService.checkEnroll(enrollmentDto, scheduleId);
   }
 
 
-  @PostMapping("/acceptEnroll")
-  public Boolean acceptEnroll(@RequestBody Long enrollmentId) {
+  @PostMapping("/acceptEnroll/{enrollmentId}")
+  public Boolean acceptEnroll(@PathVariable Long enrollmentId) {
     return enrollmentService.acceptEnroll(enrollmentId);
   }
 

@@ -2,6 +2,7 @@ package com.jrcodecrew.codeschool.controller;
 
 import com.jrcodecrew.codeschool.dto.EnrollmentDto;
 import com.jrcodecrew.codeschool.model.Order;
+import com.jrcodecrew.codeschool.service.CourseService;
 import com.jrcodecrew.codeschool.service.EnrollmentService;
 import com.jrcodecrew.codeschool.service.PaypalService;
 import com.jrcodecrew.codeschool.service.impl.PaypalServiceImpl;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
 import com.paypal.base.rest.PayPalRESTException;
+import com.jrcodecrew.codeschool.model.Course;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,14 +35,25 @@ public class PaypalController {
     public static final String SUCCESS_URL = "/pay/success";
     public static final String CANCEL_URL = "/pay/cancel";
 
+    private CourseService courseService;
+
+    @Autowired
+    public PaypalController(CourseService courseService) {
+        super();
+        this.courseService = courseService;
+    }
+
 
     @PostMapping("/pay")
-    public String payment(@RequestBody Order order, @RequestBody EnrollmentDto enrollmentDto, @RequestBody Long scheduleId) {
+    public String payment(@RequestBody Order order) {
 
         try {
+            Course course = courseService.getCourseById(order.getEnrollmentDetails().getCourseId());
+            order.setPrice(course.getPrice());
+
             Payment paymentReq = service.createPayment(order.getPrice(), order.getCurrency(), order.getMethod(),
                     order.getIntent(), order.getDescription(), "http://localhost:8080/api/paypal" + CANCEL_URL,
-                    "http://localhost:8080/api/paypal" + SUCCESS_URL + "/" + enrollmentDto.getCourseId() + "/" + enrollmentDto.getChildId() + "/" + enrollmentDto.getInstructorId()  + "/" + scheduleId );
+                    "http://localhost:8080/api/paypal" + SUCCESS_URL + "/" + order.getEnrollmentDetails().getCourseId() + "/" + order.getEnrollmentDetails().getChildId() + "/" + order.getEnrollmentDetails().getInstructorId()  + "/" + order.getEnrollmentDetails().getScheduleId() );
             for(Links link:paymentReq.getLinks()) {
                 if (link.getRel().equals("approval_url")) {
                     return link.getHref();
@@ -64,8 +77,8 @@ public class PaypalController {
             Payment payment = service.executePayment(paymentId, payerId);
             System.out.println(payment.toJSON());
             if (payment.getState().equals("approved")) {
-                EnrollmentDto enrollmentDto = new EnrollmentDto(childId,courseId, instructorId);
-                enrollmentService.enrollChild(enrollmentDto, scheduleId);
+                EnrollmentDto enrollmentDto = new EnrollmentDto(childId,courseId, instructorId,scheduleId);
+                enrollmentService.enrollChild(enrollmentDto);
                 return "success";
             }
         } catch (PayPalRESTException e) {

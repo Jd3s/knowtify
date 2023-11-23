@@ -22,7 +22,7 @@ public interface UserService {
 
   UpdatedUserResponse updateProfile(Long userId, UpdateUserDto updateUserDto);
 
-  void sendEmail(Long userId, EmailTemplate emailTemplate ) throws MessagingException;
+  void sendEmail(Long userId ) throws MessagingException;
 
 
 }

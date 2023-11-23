@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EnrollmentService {
 
-    EnrollmentDto enrollChild(EnrollmentDto enrollemntDto, Long scheduleId);
+    EnrollmentDto enrollChild(EnrollmentDto enrollemntDto);
 
     List<Course> getEnrolledCourses(Long childId);
 

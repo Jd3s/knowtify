@@ -36,7 +36,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   }
 
   @Override
-  public EnrollmentDto enrollChild(EnrollmentDto enrollmentDto, Long scheduleId) {
+  public EnrollmentDto enrollChild(EnrollmentDto enrollmentDto) {
     List<Enrollment> activeEnrollment =
         enrollmentRepository.findByChildIdAndStatus(
             enrollmentDto.getChildId(), EnrollmentStatus.ACTIVE);
@@ -68,11 +68,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     Schedule schedule =
             scheduleRepository
-                    .findById(scheduleId)
+                    .findById(enrollmentDto.getScheduleId())
                     .orElseThrow(
                             () ->
                                     new EntityNotFoundException(
-                                            "Schedule with id not found : " + scheduleId));
+                                            "Schedule with id not found : " + enrollmentDto.getScheduleId()));
 
 
 
@@ -115,7 +115,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     if (checkChildScheduleOverlap(enrollment.getChild(), schedule))
       throw new MultipleActiveEnrollmentsException();
 
-    enrollment.getSchedule().add(schedule);
+    enrollment.setSchedule(schedule);
     return enrollmentRepository.save(enrollment);
   }
 
@@ -183,6 +183,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
 
     enrollment.setStatus(EnrollmentStatus.ACTIVE);
+    enrollmentRepository.save(enrollment);
     return true;
   }
 
@@ -201,13 +202,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     // for each enrolled course, get all the schedules and check if each if it overlaps with the new schedule to be added.
    List<Enrollment> enrollments =  enrollmentRepository.findByChildIdAndStatus(child.getId(), EnrollmentStatus.ACTIVE);
    for(Enrollment enrollment : enrollments) {
-     Set<Schedule> existingSchedules = enrollment.getSchedule();
-     for(Schedule existingSchedule : existingSchedules){
-       if (existingSchedule.getDay()==schedule.getDay()){
+     Schedule existingSchedule = enrollment.getSchedule();
+     if (existingSchedule.getDay()==schedule.getDay()){
       if(isOverlapping(existingSchedule.getStartTime(), existingSchedule.getEndTime(), schedule.getStartTime(),schedule.getEndTime()))
         return true;
      }
-       }
+
    }
    return false;
   }

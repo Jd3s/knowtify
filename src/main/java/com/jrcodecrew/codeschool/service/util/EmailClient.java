@@ -1,5 +1,7 @@
 package com.jrcodecrew.codeschool.service.util;
 
+import com.jrcodecrew.codeschool.dto.EmailTemplate;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -9,15 +11,15 @@ public class EmailClient {
     private static final String senderEmail = "codeschoolx@gmail.com";//change with your sender email
     private static final String senderPassword = "gghapoblzhmkhenv";//change with your sender password
 
-    public static void sendAsHtml(String to, String title, String html) throws MessagingException {
-        System.out.println("Sending email to " + to);
-        html = "<p>"+html+"</p>";
+    public static void sendAsHtml(EmailTemplate emailTemplate) throws MessagingException {
+        System.out.println("Sending email to " + emailTemplate.getTo());
+        emailTemplate.setContent("<p>"+emailTemplate.getContent()+"</p>");
 
         Session session = createSession();
 
         //create message using session
         MimeMessage message = new MimeMessage(session);
-        prepareEmailMessage(message, to, title, html);
+        prepareEmailMessage(message, emailTemplate.getTo(), emailTemplate.getSubject(), emailTemplate.getContent());
 
         //sending message
         Transport.send(message);

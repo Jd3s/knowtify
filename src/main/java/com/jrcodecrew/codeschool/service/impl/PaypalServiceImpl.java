@@ -49,7 +49,7 @@ public class PaypalServiceImpl implements PaypalService {
         transactions.add(transaction);
 
         Payer payer = new Payer();
-        payer.setPaymentMethod(method.toString());
+        payer.setPaymentMethod(method);
 
         Payment payment = new Payment();
         payment.setIntent(intent.toString());

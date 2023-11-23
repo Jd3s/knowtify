@@ -2,16 +2,17 @@ package com.jrcodecrew.codeschool.service.impl;
 
 import com.jrcodecrew.codeschool.dto.*;
 import com.jrcodecrew.codeschool.exception.PhoneNumberException;
-import com.jrcodecrew.codeschool.model.AgeGroup;
-import com.jrcodecrew.codeschool.model.Child;
-import com.jrcodecrew.codeschool.model.User;
+import com.jrcodecrew.codeschool.model.*;
 import com.jrcodecrew.codeschool.repository.ChildRepository;
+import com.jrcodecrew.codeschool.repository.EnrollmentRepository;
 import com.jrcodecrew.codeschool.repository.UserRepository;
 import com.jrcodecrew.codeschool.response.LoginResponse;
 import com.jrcodecrew.codeschool.response.UpdatedUserResponse;
 import com.jrcodecrew.codeschool.service.UserService;
 import com.jrcodecrew.codeschool.service.util.EmailClient;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +27,15 @@ public class UserServiceImpl implements UserService {
 
   private UserRepository userRepository;
   private ChildRepository childRepository;
+  private EnrollmentRepository enrollmentRepository;
   @Autowired private PasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, ChildRepository childRepository) {
+  public UserServiceImpl(UserRepository userRepository, ChildRepository childRepository, EnrollmentRepository enrollmentRepository) {
     super();
     this.userRepository = userRepository;
     this.childRepository = childRepository;
+    this.enrollmentRepository = enrollmentRepository;
   }
 
   @Override
@@ -157,13 +160,31 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void sendEmail(Long userId, EmailTemplate emailTemplate) throws MessagingException {
-    User user = userRepository.findById(userId).orElseThrow(
+  public void sendEmail(Long enrollmentId) throws MessagingException {
+
+    Enrollment enrollment = enrollmentRepository.findById(enrollmentId).orElseThrow(
             () ->
                     new EntityNotFoundException(
-                            "User not found with email: " + userId));
-    emailTemplate.setTo(user.getEmail());
-    EmailClient.sendAsHtml(emailTemplate.getTo(),emailTemplate.getSubject(),emailTemplate.getContent());
+                            "Enrollment not found for id: " + enrollmentId));
+    int day = enrollment.getSchedule().getDay();
+    LocalTime startTime = enrollment.getSchedule().getStartTime();
+    LocalTime endTime = enrollment.getSchedule().getEndTime();
+    String schedule =
+        DayOfWeek.getDayByNumber(day) + " " + startTime.toString() + " - " + endTime.toString();
+    String content =
+        String.format(
+            "Your child has been successfully enrolled in the course %s with instructor %s.\n Meeting link: %s on %s",
+            enrollment.getCourse().getCourseName(),
+            enrollment.getInstructor().getFirstName() + enrollment.getInstructor().getLastName(),
+            enrollment.getInstructor().getMeetingLink(),
+                schedule);
+    Child child = enrollment.getChild();
+    User childUser = userRepository.findById(child.getId()).orElseThrow(
+            () ->
+                    new EntityNotFoundException(
+                            "User not found with id: " + child.getId()));
+    EmailTemplate emailTemplate = new EmailTemplate(childUser.getParent().getEmail(), "CodeSchool Enrollment", content);
+    EmailClient.sendAsHtml(emailTemplate);
 
   }
 

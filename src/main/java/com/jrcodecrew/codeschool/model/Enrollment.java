@@ -30,8 +30,9 @@ public class Enrollment {
   @Enumerated(EnumType.STRING)
   private EnrollmentStatus status;
 
-  @ManyToMany(mappedBy = "enrollments")
-  private Set<Schedule> schedules = new HashSet<>();
+  @ManyToOne
+  @JoinColumn(name = "schedule_id")
+  private Schedule schedule;
 
   public Enrollment() {}
 
@@ -47,7 +48,7 @@ public class Enrollment {
     this.course = course;
     this.instructor = instructor;
     this.status = EnrollmentStatus.PENDING;
-    this.schedules.add(schedule);
+    this.schedule = schedule;
   }
 
   public Child getChild() {
@@ -81,12 +82,13 @@ public class Enrollment {
   public void setStatus(EnrollmentStatus status) {
     this.status = status;
   }
-  public void setSchedule(Set<Schedule> schedules) {
-    this.schedules = schedules;
+
+  public Schedule getSchedule() {
+    return schedule;
   }
 
-  public Set<Schedule> getSchedule() {
-    return schedules;
+  public void setSchedule(Schedule schedule) {
+    this.schedule = schedule;
   }
 
   @Override
@@ -102,6 +104,8 @@ public class Enrollment {
         + instructor
         + ", status="
         + status
+        + ", schedule="
+        + schedule
         + '}';
   }
 }

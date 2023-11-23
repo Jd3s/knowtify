@@ -7,15 +7,15 @@ public class EnrollmentDto {
   private Long childId;
   private String courseId;
   private Long instructorId;
+  private Long scheduleId;
   private EnrollmentStatus status;
-
   private String link;
 
-
-  public EnrollmentDto(Long childId, String courseId, Long instructorId) {
+  public EnrollmentDto(Long childId, String courseId, Long instructorId, Long scheduleId ) {
     this.childId = childId;
     this.courseId = courseId;
     this.instructorId = instructorId;
+    this.scheduleId = scheduleId;
   }
 
   public EnrollmentDto() {}
@@ -48,6 +48,14 @@ public class EnrollmentDto {
     return status;
   }
 
+  public Long getScheduleId() {
+    return scheduleId;
+  }
+
+  public void setScheduleId(Long scheduleId) {
+    this.scheduleId = scheduleId;
+  }
+
   public EnrollmentDto setStatus(EnrollmentStatus status) {
     this.status = status;
     return this;
@@ -55,15 +63,11 @@ public class EnrollmentDto {
 
   @Override
   public String toString() {
-    return "EnrollmentDto{"
-        + "childId="
-        + childId
-        + ", courseId='"
-        + courseId
-        + '\''
-        + ", instructorId='"
-        + instructorId
-        + '\''
-        + '}';
+    return "EnrollmentDto{" +
+            "childId=" + childId +
+            ", courseId='" + courseId + '\'' +
+            ", instructorId=" + instructorId +
+            ", scheduleId=" + scheduleId +
+            '}';
   }
 }

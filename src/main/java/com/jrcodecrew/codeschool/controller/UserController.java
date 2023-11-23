@@ -66,11 +66,11 @@ public class UserController {
   }
 
 
-  @PostMapping("/sendEmail/{userId}")
+  @PostMapping("/sendEmail/{enrollmentId}")
   public ResponseEntity<String> sendEmail(
-          @PathVariable Long userId, @RequestBody EmailTemplate emailTemplate) {
+          @PathVariable Long enrollmentId) {
     try{
-      userService.sendEmail(userId, emailTemplate);
+      userService.sendEmail(enrollmentId);
     }
     catch(MessagingException e){
       e.printStackTrace();

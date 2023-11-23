@@ -101,6 +101,14 @@ public class Instructor {
     this.proficiency = proficiency;
   }
 
+  public String getMeetingLink() {
+    return meetingLink;
+  }
+
+  public void setMeetingLink(String meetingLink) {
+    this.meetingLink = meetingLink;
+  }
+
   @Override
   public String toString() {
     return "Instructor{"
