@@ -77,7 +77,7 @@ public class InstructorServiceImpl implements InstructorService {
   }
 
   @Override
-  public List<Schedule> getScheduleByInstructorId(Long instructorId) {
+  public List<Schedule> getScheduleByInstructorEmail(Long instructorId) {
     return scheduleRepository.findByInstructorId(instructorId);
   }
 

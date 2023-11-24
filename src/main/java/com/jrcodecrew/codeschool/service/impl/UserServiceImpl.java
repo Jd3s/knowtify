@@ -1,7 +1,10 @@
 package com.jrcodecrew.codeschool.service.impl;
 
 import com.jrcodecrew.codeschool.dto.*;
+import com.jrcodecrew.codeschool.exception.EmailNotExistsException;
+import com.jrcodecrew.codeschool.exception.LoginFailedException;
 import com.jrcodecrew.codeschool.exception.PhoneNumberException;
+import com.jrcodecrew.codeschool.exception.WrongPasswordException;
 import com.jrcodecrew.codeschool.model.*;
 import com.jrcodecrew.codeschool.repository.ChildRepository;
 import com.jrcodecrew.codeschool.repository.EnrollmentRepository;
@@ -60,13 +63,13 @@ public class UserServiceImpl implements UserService {
           loginResponse.setUserId(user1.get().getId());
           return loginResponse;
         } else {
-          return new LoginResponse("Login Failed", false);
+          throw new LoginFailedException();
         }
       } else {
-        return new LoginResponse("password Not Match", false);
+        throw new WrongPasswordException();
       }
     } else {
-      return new LoginResponse("Email not exists", false);
+      throw new EmailNotExistsException();
     }
   }
 
