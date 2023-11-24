@@ -21,7 +21,6 @@ public class Enrollment {
   @JoinColumn(name = "course_id")
   private Course course;
 
-  // @JsonIgnore
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "instructor_id")
   private Instructor instructor;
@@ -91,21 +90,23 @@ public class Enrollment {
     this.schedule = schedule;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
   @Override
   public String toString() {
-    return "Enrollment{"
-        + "id="
-        + id
-        + ", child="
-        + child
-        + ", course="
-        + course
-        + ", instructor="
-        + instructor
-        + ", status="
-        + status
-        + ", schedule="
-        + schedule
-        + '}';
+    return "Enrollment{" +
+            "id=" + id +
+            ", child=" + child +
+            ", course=" + course +
+            ", instructor=" + instructor +
+            ", status=" + status +
+            ", schedule=" + schedule +
+            '}';
   }
 }

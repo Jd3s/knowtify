@@ -46,4 +46,12 @@ public class Child {
         this.ageGroup = ageGroup;
         return this;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }
