@@ -2,6 +2,7 @@ package com.jrcodecrew.codeschool.controller;
 
 import com.jrcodecrew.codeschool.dto.*;
 import com.jrcodecrew.codeschool.model.Child;
+import com.jrcodecrew.codeschool.model.Enrollment;
 import com.jrcodecrew.codeschool.model.User;
 import com.jrcodecrew.codeschool.response.LoginResponse;
 import com.jrcodecrew.codeschool.response.UpdatedUserResponse;
@@ -64,6 +65,7 @@ public class UserController {
     UpdatedUserResponse updateProfile = userService.updateProfile(userId, updateUserDto);
     return ResponseEntity.ok(updateProfile);
   }
+
 
 
   @PostMapping("/sendEmail/{enrollmentId}")

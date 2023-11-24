@@ -1,6 +1,7 @@
 package com.jrcodecrew.codeschool.service.impl;
 
 import com.jrcodecrew.codeschool.dto.EnrollmentDto;
+import com.jrcodecrew.codeschool.exception.EnrollmentLimitExceeded;
 import com.jrcodecrew.codeschool.exception.MultipleActiveEnrollmentsException;
 import com.jrcodecrew.codeschool.model.*;
 import com.jrcodecrew.codeschool.repository.*;
@@ -120,7 +121,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   }
 
   @Override
-  public Boolean checkEnroll(EnrollmentDto enrollmentDto, Long scheduleId) {
+  public Boolean checkEnroll(EnrollmentDto enrollmentDto) {
 
     List<Enrollment> activeEnrollment =
             enrollmentRepository.findByChildIdAndStatus(
@@ -156,21 +157,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     Schedule schedule =
             scheduleRepository
-                    .findById(scheduleId)
+                    .findById(enrollmentDto.getScheduleId())
                     .orElseThrow(
                             () ->
                                     new EntityNotFoundException(
-                                            "Schedule with id not found : " + scheduleId));
+                                            "Schedule with id not found : " + enrollmentDto.getScheduleId()));
 
-
-    if(!(schedule.getCap() > schedule.getCurrently_enrolled()))
-      throw new EntityNotFoundException(
-              "Enrollment limit exceeded for : " + scheduleId);
+    if (!(schedule.getCap() > schedule.getCurrently_enrolled()))
+      throw new EnrollmentLimitExceeded(
+          "Enrollment limit exceeded");
 
     if (checkChildScheduleOverlap(child, schedule))
       throw new MultipleActiveEnrollmentsException();
-
-
     return true;
   }
 
@@ -191,6 +189,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   public List<Enrollment> getPendingEnrollments() {
     List<Enrollment> enrollments = enrollmentRepository.findAllByStatus(EnrollmentStatus.PENDING);
     return enrollments;
+  }
+
+  @Override
+  public List<Enrollment> getAllEnrollmentsForCourse(String courseId) {
+    return enrollmentRepository.findAllByCourseId(courseId);
   }
 
 

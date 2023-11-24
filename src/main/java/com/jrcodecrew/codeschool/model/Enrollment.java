@@ -13,16 +13,16 @@ public class Enrollment {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "child_id")
   private Child child;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "course_id")
   private Course course;
 
   // @JsonIgnore
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "instructor_id")
   private Instructor instructor;
 

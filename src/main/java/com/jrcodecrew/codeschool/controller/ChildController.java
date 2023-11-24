@@ -23,8 +23,8 @@ public class ChildController {
   }
 
   @PostMapping("/checkEnroll")
-  public Boolean checkEnroll(@RequestBody EnrollmentDto enrollmentDto, @RequestBody Long scheduleId) {
-    return enrollmentService.checkEnroll(enrollmentDto, scheduleId);
+  public Boolean checkEnroll(@RequestBody EnrollmentDto enrollmentDto) {
+    return enrollmentService.checkEnroll(enrollmentDto);
   }
 
 

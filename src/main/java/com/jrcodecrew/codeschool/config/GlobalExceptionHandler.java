@@ -1,5 +1,6 @@
 package com.jrcodecrew.codeschool.config;
 
+import com.jrcodecrew.codeschool.exception.EnrollmentLimitExceeded;
 import com.jrcodecrew.codeschool.exception.MultipleActiveEnrollmentsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MultipleActiveEnrollmentsException.class)
     public ResponseEntity<String> handleIllegalArgumentException(MultipleActiveEnrollmentsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EnrollmentLimitExceeded.class)
+    public ResponseEntity<String> handleEnrollmentLimitExceeded(EnrollmentLimitExceeded ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

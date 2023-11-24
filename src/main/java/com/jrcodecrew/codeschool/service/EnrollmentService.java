@@ -15,9 +15,12 @@ public interface EnrollmentService {
 
     Enrollment addScheduleToEnrollment(Long scheduleId, Long enrollmentId);
 
-    Boolean checkEnroll(EnrollmentDto enrollmentDto, Long scheduleId);
+    Boolean checkEnroll(EnrollmentDto enrollmentDto);
 
     Boolean acceptEnroll(Long enrollmentId);
 
     List<Enrollment> getPendingEnrollments();
+
+    List<Enrollment> getAllEnrollmentsForCourse(String courseId);
+
 }
